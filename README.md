@@ -13,6 +13,14 @@ Junto a isso foi implementado um sistema simples de criptografia para os dados e
 uma implementação mais segura, mas inicialmente era um grande chat onde os peers podiam enviar uns para os outros qualquer
 tipo de mensagem sem maiores problemas nem hierarquia.<br/>
 <h4>Versão 1.1</h4>
-Foi implementada dentro do Tracker uma variavel que guarda o numero limite de pessoas que estão dentro do shopping, está
+Foi implementada dentro do Tracker uma variavel que guarda o numero limite de pessoas que estão dentro do shopping, 
 o numero real de pessoas dentro do shopping é administrado pelos clientes, que deixaram de enviar mensagens soltas e por
 sua vez passaram a enviar mensagens especificas sobre entrada e/ou saída de pessoas.<br/><br/>
+Também foi criado um sistema aonde peers novos precisam registrar informações sobre a identidade deles, se são lojas,
+andares, ou o shopping, assim permitindo uma base para a implementação de hierarquia, ainda não existente.<br/><br/>
+E junto a isso foi criado um sistema para a melhor segurança da entrega de um pacote, como os peers estão usando o
+protocolo UDP, não há como garantir a entrega de um pacote apenas pelo envio do mesmo, então foi criado um sistema onde,
+assim que for recebido um pacote o peer envia uma mensagem a quem enviou de que o mesmo foi entregue. Assim como um
+limitador de tempo para que o sistema de cada peer receba um pacote.<br/><br/>
+<h4>Versão 1.2</h4>
+EM BREVE
