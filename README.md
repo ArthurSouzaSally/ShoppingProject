@@ -21,6 +21,6 @@ andares, ou o shopping, assim permitindo uma base para a implementação de hier
 E junto a isso foi criado um sistema para a melhor segurança da entrega de um pacote, como os peers estão usando o
 protocolo UDP, não há como garantir a entrega de um pacote apenas pelo envio do mesmo, então foi criado um sistema onde,
 assim que for recebido um pacote o peer envia uma mensagem a quem enviou de que o mesmo foi entregue. Assim como um
-limitador de tempo para que o sistema de cada peer receba um pacote.<br/><br/>
+limitador de tempo para que o sistema de cada peer receba um pacote.<br/>
 <h4>Versão 1.2</h4>
 EM BREVE
