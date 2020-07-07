@@ -1,6 +1,7 @@
 
-import socket, pickle, threading
+import socket, pickle, threading, json
 
+dados = json.loads(open('data.txt','r').read())
 print("Iniciando Servidor...")
 h = socket.gethostbyname(socket.gethostname())
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -17,7 +18,7 @@ while limite <= 0:
 peers = []
 
 def receber():
-	global s, peers
+	global s, peers, dados
 	while True:
 		try:
 			a = s.recvfrom(10000)
@@ -39,6 +40,16 @@ def receber():
 			# Informar limite de pessoas
 			elif pickle.loads(a[0]) == "limit":
 				s.sendto(pickle.dumps({"limite":limite}),a[1])
+			# Verificar Login e Senha
+			elif pickle.loads(a[0])[0] == "@":
+				data = pickle.loads(a[0])[1:len(pickle.loads(a[0]))].split(";")
+				try:
+					if dados[data[0]] == data[1]:
+						s.sendto(pickle.dumps({"login":True}),a[1])
+					else:
+						s.sendto(pickle.dumps({"login":False}),a[1])
+				except:
+					s.sendto(pickle.dumps({"login":False}),a[1])
 		except:
 			pass
 	print("FIM")

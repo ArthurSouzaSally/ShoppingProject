@@ -36,6 +36,17 @@ while eu == "" and peers == "" and limite == 0:
 	except:
 		eu = ""
 
+while True:
+	try:
+		login = input("Informe o Login: ")
+		senha = input("Informe a Senha: ")
+		if enviar("@"+login+";"+senha)["login"]:
+			break
+		else:
+			print("Login ou Senha Incorretas")
+	except:
+		print("Erro na Comunicação, Tente novamente")
+
 # Variaveis para Determinar quem eu sou no Shopping
 sou = ""
 estou = 0
@@ -175,7 +186,6 @@ print("FIM")
 
 """
 O que falta:
-- Sistema de Login e Senha
 - Entradas para Funcionarios
 - Hierarquia entre Andares, Lojas e Shopping
 """

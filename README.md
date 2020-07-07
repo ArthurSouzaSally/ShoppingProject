@@ -23,4 +23,6 @@ protocolo UDP, não há como garantir a entrega de um pacote apenas pelo envio d
 assim que for recebido um pacote o peer envia uma mensagem a quem enviou de que o mesmo foi entregue. Assim como um
 limitador de tempo para que o sistema de cada peer receba um pacote.<br/>
 <h4>Versão 1.2</h4>
-EM BREVE
+Sistema de Login e Senha implementado do lado do tracker, a fim de manter segurança, os usuarios não tem acesso ao arquivo
+contendo os dados de entrada, apenas o tracker pode autenticar a entrada de novos usuarios.<br/>
+<h4>Versão 1.3</h4>
