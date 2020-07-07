@@ -17,6 +17,7 @@ def enviar(info):
 			return pickle.loads(data[0])
 			break
 
+# Atualizando informações de Peers da rede P2P
 print("Atualizando informações...")
 eu = ""
 peers = ""
@@ -36,6 +37,7 @@ while eu == "" and peers == "" and limite == 0:
 	except:
 		eu = ""
 
+# Verificando Login e Senha
 while True:
 	try:
 		login = input("Informe o Login: ")
