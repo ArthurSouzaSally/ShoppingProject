@@ -24,7 +24,10 @@ assim que for recebido um pacote o peer envia uma mensagem a quem enviou de que 
 limitador de tempo para que o sistema de cada peer receba um pacote.<br/>
 <h4>Versão 1.2</h4>
 Sistema de Login e Senha implementado do lado do tracker, a fim de manter segurança, os usuarios não tem acesso ao arquivo
-contendo os dados de entrada, apenas o tracker pode autenticar a entrada de novos usuarios.<br/>
+contendo os dados de entrada, apenas o tracker pode autenticar a entrada de novos usuarios.<br/><br/>
+Dentro de um Sistema P2P, é preciso que alguem faça a autenticação dos usuarios, e precisa ser alguem de confiança, os
+peers nunca podem ter acesso direto ao arquivo onde estão guardados os dados dos usuarios, se não existe problemas para
+manter a segurança e a garantia de que os usuarios são autenticos.<br/>
 <h4>Versão 1.3 : EM BREVE</h4>
 - Fazer um sistema para diferenciar mais entradas, funcionarios, clientes, etc...<br/>
 - Junto a isso criar o sistema de hierarquia dentro de cada peer, assim eles funcionam sozinhos.<br/>
