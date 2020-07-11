@@ -142,7 +142,7 @@ def falar(info,tipo,saida):
 	for x in peers:
 		while True:
 			try:
-				s.sendto(pickle.dumps({tipo:info,"sou":str(estou)+sou+de,"para":temp1}),pickle.loads(x))
+				s.sendto(pickle.dumps({tipo:info,"sou":str(estou)+sou+de,"para":saida}),pickle.loads(x))
 				d = s.recvfrom(10000)
 				if d[1][0] == pickle.loads(x)[0] and d[1][1] == pickle.loads(x)[1]:
 					if pickle.loads(d[0]) == "OK":
