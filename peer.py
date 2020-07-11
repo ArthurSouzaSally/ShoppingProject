@@ -10,8 +10,8 @@ port = 15000
 # Enviar mensagens para o Servidor
 def enviar(info):
 	global s, ip, port
-	s.sendto(pickle.dumps(info),(ip,port))
 	while True:
+		s.sendto(pickle.dumps(info),(ip,port))
 		data = s.recvfrom(15000)
 		if data[1][0] == ip and data[1][1] == port:
 			return pickle.loads(data[0])
@@ -50,7 +50,13 @@ while True:
 		print("Erro na Comunicação, Tente novamente")
 
 # Variaveis para Determinar quem eu sou no Shopping
+# "l" - Loja
+# "a" - Andares
+# "s" - Entrada do Shopping
+# "f" - Entrada do Shopping para Funcionarios
+# "c" - Entrada para Clientes
 sou = ""
+de = ""
 estou = 0
 while sou != "s" and sou != "l" and sou != "a":
 	try:
@@ -69,6 +75,14 @@ if sou == "a" or sou == "l":
 			break
 		except:
 			estou = 0
+de = ""
+while de != "f" and de != "c":
+	try:
+		print("f - Funcionarios")
+		print("c - Clientes")
+		de = input("").lower()
+	except:
+		de = ""
 
 # Receber Pacotes e processar informações
 def receber():
@@ -104,6 +118,7 @@ def receber():
 						d = data["saiu"]
 						if d >= 0 and d <= limite:
 							# analisar o data['sou'] para saber o que fazer
+							# analisar o data['para'] para saber onde a pessoa foi
 							total = d
 					except:
 						pass
@@ -111,6 +126,7 @@ def receber():
 						d = data["entrou"]
 						if d >= 0 and d <= limite:
 							# analisar o data['sou'] para saber o que fazer
+							# analisar o data['para'] para saber onde a pessoa foi
 							total = d
 					except:
 						pass
@@ -121,12 +137,12 @@ def receber():
 threading.Thread(target=receber, args=()).start()
 
 # Enviar mensagens para outros peers
-def falar(info,tipo):
-	global s, peers, estou, sou
+def falar(info,tipo,saida):
+	global s, peers, estou, sou, de
 	for x in peers:
 		while True:
 			try:
-				s.sendto(pickle.dumps({tipo:info,"sou":str(estou)+sou}),pickle.loads(x))
+				s.sendto(pickle.dumps({tipo:info,"sou":str(estou)+sou+de,"para":temp1}),pickle.loads(x))
 				d = s.recvfrom(10000)
 				if d[1][0] == pickle.loads(x)[0] and d[1][1] == pickle.loads(x)[1]:
 					if pickle.loads(d[0]) == "OK":
@@ -160,27 +176,51 @@ while True:
 		print("saiu -> Informar saída de pessoas")
 		print("entrou -> Informar entrada de pessoas")
 	elif i == "saiu":
+		# quantidade
 		n = 0
 		while n <= 0:
 			try:
 				n = int(input(">> "))
 			except:
 				n = 0
+		# indo para
+		temp1 = ""
+		print("Indo para: ")
+		while temp1 != "s" and temp1 != "a" and temp1 != "l":
+			try:
+				print("s - Saindo do Shopping")
+				print("a - Indo para outro Andar")
+				print("l - Indo para outra Loja")
+				temp1 = input("").lower()
+			except:
+				temp1 = ""
 		# comparador
 		if total >= n:
 			total-=n
-			falar(total,"saiu")
+			falar(total,"saiu",temp1)
 	elif i == "entrou":
+		# quantidade
 		n = 0
 		while n <= 0:
 			try:
 				n = int(input(">> "))
 			except:
 				n = 0
+		# indo para
+		temp1 = ""
+		print("Indo para: ")
+		while temp1 != "s" and temp1 != "a" and temp1 != "l":
+			try:
+				print("s - Saindo do Shopping")
+				print("a - Indo para outro Andar")
+				print("l - Indo para outra Loja")
+				temp1 = input("").lower()
+			except:
+				temp1 = ""
 		# comparador
 		if total+n <=limite:
 			total+=n
-			falar(total,"entrou")
+			falar(total,"entrou",temp1)
 	else:
 		print("Comando não Reconhecido")
 
