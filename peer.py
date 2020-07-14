@@ -196,8 +196,16 @@ def falar(info,tipo,saida):
 				pass
 
 # Loop de Comandos, para que seja possivel simular o sensor
-# que passa informações de quem entrou ou saiu.
+# que passa informações de quem entrou ou saiu. Dentro do Loop
+# não há variaveis que são modificadas a não ser a variavel
+# total que já foi descrita antes, variaveis como 'n' e 'temp1'
+# são variaveis temporarias para a solicitação de um valor e
+# depois são descartadas
 while True:
+	# "i" é uma variavel apenas para receber comandos e simular
+	# a existencia de um sensor recebendo informações sobre quem
+	# entra e quem sai, nesse caso estamos assumindo que todos
+	# os sensores funcionam com perfeição e sem erros.
 	i = input("")
 	if i == "mPeer":
 		print("Meu Peer: "+str(eu))
