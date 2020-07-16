@@ -369,5 +369,9 @@ PROBLEMAS:
 (Isso eu sei como resolver, mas precisaria de uns dias poís preciso mudar toda a rede até lá)
 - Certos tratamentos eu tirei para não dar problema, mas isso abre brexa para outras irregularidades
 (Isso também eu sei resolver, mas falta tempo e o sistema ainda é muito simples)
-- 
+- Eu criei a lógica de pacotes pensando em segurança e velocidade, mas o numero de informações agora que eu
+decidi implementar hierarquia é muito pequeno, eu precisaria de mais informações por pacote para fazer algo
+maior, o problema é que até dá para fazer isso, mas eu sei que isso vai foder com a segurança que eu criei
+até agora por causa de como eram enviadas as informações dos pacotes usando UDP, isso dá pra resolver, mas
+de novo eu precisaria de mais tempo, tempo que agora tá me faltando.
 """
