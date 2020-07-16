@@ -364,7 +364,8 @@ print("FIM")
 
 """
 PROBLEMAS:
-- Numeros de pessoas irregulares de peers causam problemas na hora de troca-los
+- Numeros de pessoas irregulares de peers causam problemas na hora de trocar informações, então tá dando pau
+na hora de saber quantas pessoas foram de um lugar para outro, isso se torna confuso.
 - O problema da quantidade de pessoas calculada quando não se tem informação completa da quantidade de pessoas
 (Isso eu sei como resolver, mas precisaria de uns dias poís preciso mudar toda a rede até lá)
 - Certos tratamentos eu tirei para não dar problema, mas isso abre brexa para outras irregularidades
