@@ -183,13 +183,24 @@ def receber():
 							# Se o lugar de onde veio fica no mesmo andar, e veio para quem eu sou quando sou o andar
 							# então faz sentido aparecer para mim
 							if data['sou'].split(";")[0] == estou and data['para'] == str(estou)+sou:
-								total = d
+								# Isso é a falha criada pelo numero irregular de pessoas
+								if total-d >= 0:
+									total = total-d
+								else:
+									total = d-total
 							# Tratamento para o caso do peer duplo
 							elif data['sou'].split(";")[0] == estou and data['sou'].split(";")[1] == sou and data['sou'].split(";")[2] == de and data['sou'].split(";")[3] == id:
-								total = d
+								# Isso é a falha criada pelo numero irregular de pessoas
+								if total-d >= 0:
+									total = total-d
+								else:
+									total = d-total
 							# Tratamento para o caso de eu ser uma loja
 							elif data['sou'].split(";")[0] == estou and data['para'] == sou+str(id):
 								total = d # ISSO ESTÁ ERRADO, O CALCULO TÁ ERRADO MAS EU NÃO SEI COMO CONCERTAR ISSO SEM COMPROMETER A REDE ATÉ AGORA!
+							# Tratamento caso a pessoa esteja indo embora do primeiro andar
+							elif data['sou'] == str(estou)+";"+sou+";"+de+";"+str(id) and data['para'] == 's' and estou == 1:
+								total = d
 					except:
 						pass
 					try:
@@ -204,19 +215,22 @@ def receber():
 								else:
 									total = d-total
 							# Se alguem entrou lá vindo daqui, porem esse é o caso de lojas
-							elif data['sou'].split(";")[0] == estou and data['para'] == sou+str(id):
+							elif data['sou'].split(";")[0] == str(estou) and data['para'] == sou+str(id):
 								# Isso é a falha criada pelo numero irregular de pessoas
 								if total-d >= 0:
 									total = total-d
 								else:
 									total = d-total
 							# Caso alguem troque de andar
-							elif data['sou'].split(";")[1] == sou and sou == 'a' and math.sqrt(int(data['sou'].split(";")[0])-estou)**2) == 1:
+							elif data['sou'].split(";")[1] == sou and sou == 'a' and int(math.sqrt((int(data['sou'].split(";")[0])-estou)**2)) == 1:
 								# Isso é a falha criada pelo numero irregular de pessoas
 								if total-d >= 0:
 									total = total-d
 								else:
 									total = d-total
+							# Tratamento caso alguem tenha entrado no shopping
+							elif data['sou'].split(";")[1] == 's' and data['para'] == 's' and sou == 'a' and estou == 1:
+								total = d
 					except:
 						pass
 					print("Dados Atualizados")
@@ -236,18 +250,24 @@ def falar(info,tipo,saida):
 	global s, peers, estou, sou, de, id
 	# Acontece para todos os peers
 	for x in peers:
-		# Vai enviar a mensagem infinitas vezes até receber a confirmação de que o pacote foi entregue
+		# Envia até 10 mensagens esperando uma resposta antes de desistir
+		t = 0
 		while True:
 			# É preciso o try para tratar a possibilidade de uma falha no envio de mensagem
 			# a informação 'sou' é andar;s/a/l;f/c;id
 			try:
-				s.sendto(pickle.dumps({tipo:info,"sou":str(estou)+";"+sou+";"+de+";"+id,"para":saida}),pickle.loads(x))
+				s.sendto(pickle.dumps({tipo:info,"sou":str(estou)+";"+sou+";"+de+";"+str(id),"para":saida}),pickle.loads(x))
+				t+=1
+				if t >= 10:
+					break
 				d = s.recvfrom(10000)
-				if d[1][0] == pickle.loads(x)[0] and d[1][1] == pickle.loads(x)[1]:
-					if pickle.loads(d[0]) == "OK":
-						break
+				# Garantindo que a confirmação veio
+				if d[1][0] == pickle.loads(x)[0] and d[1][1] == pickle.loads(x)[1] and pickle.loads(d[0]) == "OK":
+					break
 			except:
-				pass
+				t+=1
+				if t >= 10:
+					break
 
 # Loop de Comandos, para que seja possivel simular o sensor
 # que passa informações de quem entrou ou saiu. Dentro do Loop
@@ -314,7 +334,14 @@ while True:
 					temp2 = 0
 			temp1 = str(temp2)+temp1
 		elif temp1 == "l":
-			temp1 = temp1+str(id)
+			temp2 = 0
+			while temp2 == 0:
+				try:
+					print("Qual o ID da loja?")
+					temp2 = int(input(""))
+				except:
+					temp2 = 0
+			temp1 = temp1+str(temp2)
 		# Comparar com o numero total atual
 		if total >= n:
 			total-=n
@@ -334,9 +361,9 @@ while True:
 		print("Vindo de: ")
 		while temp1 != "s" and temp1 != "a" and temp1 != "l":
 			try:
-				print("s - Saindo do Shopping")
-				print("a - Indo para outro Andar")
-				print("l - Indo para outra Loja")
+				print("s - Entrando no Shopping")
+				print("a - Vindo de outro Andar")
+				print("l - Vindo de outra Loja")
 				temp1 = input("").lower()
 			except:
 				temp1 = ""
@@ -350,7 +377,14 @@ while True:
 					temp2 = 0
 			temp1 = str(temp2)+temp1
 		elif temp1 == "l":
-			temp1 = temp1+str(id)
+			temp2 = 0
+			while temp2 == 0:
+				try:
+					print("Qual o ID da loja?")
+					temp2 = int(input(""))
+				except:
+					temp2 = 0
+			temp1 = temp1+str(temp2)
 		# Comparar com o limite maximo de pessoas
 		if total+n <=limite:
 			total+=n
