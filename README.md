@@ -28,6 +28,12 @@ contendo os dados de entrada, apenas o tracker pode autenticar a entrada de novo
 Dentro de um Sistema P2P, é preciso que alguem faça a autenticação dos usuarios, e precisa ser alguem de confiança, os
 peers nunca podem ter acesso direto ao arquivo onde estão guardados os dados dos usuarios, se não existe problemas para
 manter a segurança e a garantia de que os usuarios são autenticos.<br/>
-<h4>Versão 1.3 : EM BREVE</h4>
-- Fazer um sistema para diferenciar mais entradas, funcionarios, clientes, etc...<br/>
-- Junto a isso criar o sistema de hierarquia dentro de cada peer, assim eles funcionam sozinhos.<br/>
+<h4>Versão 1.3</h4>
+O codigo inteiro foi refeito, mas o sistema de login e senha já foi implementado, assim como o funcionamento do tracker
+que funciona perfeitamente, os pacotes se tornaram mais complexos e foi implementado um sistema para diferenciar quais
+pacotes são mais novos e quais são mais velhos, assim permitindo uma implementação mais segura do codigo.
+A hierarquia foi implementada, mas por problemas no envio de pacotes ainda preciso tornar o UDP ainda mais seguro com
+uma confirmação maior de que os pacotes foram processados.
+<h4>Versão 1.4 : Em BREVE</h4>
+- Melhorar ainda mais o sistema de envio de mensagens para deixa-lo seguro.<br/>
+- Criar um sistema de recusa por parte dos peers que envia pacotes corrigindo numeros<br/>
