@@ -1,398 +1,299 @@
 
-# As bibliotecas são:
-  # socket - para fazer comunicação na rede
-  # pickle - para transformar variaveis em bytes
-  # threading - para executar funções em paralelo
-  # time - para controle temporal
-  # math - para fazer calculos
-import socket, pickle, threading, time, math
+import socket, pickle, threading
 
-# Criar um socket UDP usando IPv4
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-# Limitando o tempo de resposta do envio de pacotes UDP
+
+# Cogitando uma Falha no Tracker
 s.settimeout(5)
 
-# Receber o IP do Tracker
-ip = input("IP do Tracker: ")
-# Porta Padrão do Tracker
-port = 15000
+h = input("IP do Tracker: ")
 
-# Função que Envia informações para o Tracker e recebe uma resposta
-def enviar(info):
-	global s, ip, port
-	while True:
-		s.sendto(pickle.dumps(info),(ip,port))
-		data = s.recvfrom(15000)
-		if data[1][0] == ip and data[1][1] == port:
-			return pickle.loads(data[0])
-			break
-
-# Informando ao Publico que as Informações estão sendo atualizadas
-print("Atualizando informações...")
-# Variavel 'eu' que guarda quem você é na rede
-eu = ""
-# Variavel 'peers' que guarda a lista dos peers atual
-peers = ""
-# Variavel 'limite' que guarda o limite de pessoas no shopping
-limite = 0
-# Variavel 'total' que guarda a quantidade atual de pessoas no shopping
-total = 0
-# Estrutura de Repetição para entrar em contato com o Servidor com a
-# função anterior e só sai quando todas as informações estão atualizadas
-while eu == "" and peers == "" and limite == 0:
+# Função para Falar com o Servidor
+def Tracker(data):
 	try:
-		eu = enviar("oi")["ip"]
-		try:
-			peers = enviar("list")["list"]
-			try:
-				limite = enviar("limit")["limite"]
-			except:
-				limite = 0
-		except:
-			peers = ""
+		s.sendto(pickle.dumps(data),(h,15000))
+		d = s.recvfrom(1024)
+		if d[1][0] == h and d[1][1] == 15000:
+			return pickle.loads(d[0])
 	except:
-		eu = ""
+		return False
 
-# Verificando Login e Senha, quando as informações são confirmadas
-# pelo Tracker com uma variavel boleana "True" então o peer pode
-# prosseguir com o código
+# Login e Senha
+login = input("Login : ")
+senha = input("Senha : ")
+while Tracker(login+"@"+senha) != True:
+	print("Login ou Senha Incorretos!")
+	login = input("Login : ")
+	senha = input("Senha : ")
+print("Acesso Concedido!")
+
+# Atualização de Dados
+print("Atualizando Dados...")
+peer = ""
+list = ""
+# Atualizar quem eu sou
 while True:
 	try:
-		login = input("Informe o Login: ")
-		senha = input("Informe a Senha: ")
-		if enviar("@"+login+";"+senha)["login"]:
-			break
-		else:
-			print("Login ou Senha Incorretas")
+		peer = Tracker("me")["me"]
+		break
 	except:
-		print("Erro na Comunicação, Tente novamente")
-
-# Variavel para Determinar quem eu sou no Shopping
-# "l" - Loja
-# "a" - Andares
-# "s" - Entrada do Shopping
-sou = ""
-# Variavel que determina o tipo de entrada no Shopping:
-# "f" - Entrada do Shopping para Funcionarios
-# "c" - Entrada para Clientes
-de = ""
-# Variavel que guarda em qual andar eu estou
-estou = 0
-# Variavel Caso eu Seja uma Loja, para diferenciar lojas no
-# mesmo andar.
-id = 0
-while sou != "s" and sou != "l" and sou != "a":
+		pass
+# Atualizar lista de Peers
+while True:
 	try:
-		print("s - Shopping")
-		print("a - andar")
-		print("l - Loja")
-		sou = input("").lower()
+		list = Tracker("list")["list"]
+		break
 	except:
-		sou = ""
+		pass
+print("Dados Atualizados!")
+
+# Caracteristicas do pedaço do Shopping
+sou = "" # Quem eu sou
+estou = 0 # Que andar eu estou
+id = 0 # Caso seja uma loja
+limite = 0 # Limite de pessoas
+total = 0 # Quantidade atual
+print("O que eu sou?")
+print("s - Shopping")
+print("a - Andar")
+print("l - Loja")
+while sou != "s" and sou != "a" and sou != "l":
+	sou = input("").lower()
 if sou == "a" or sou == "l":
-	estou = 0
-	while estou <= 0:
-		print("Qual andar eu estou?")
-		try:
-			estou = int(input(""))
-		except:
-			estou = 0
-	# Variavel para comparar com 'limite', para saber quantas pessoas podem
-	# entrar no andar ou loja
-	temp1 = 0
-	while temp1 <= 0:
-		print("Qual o limite de pessoas?")
-		try:
-			temp1 = int(input(""))
-			if temp1 <= limite:
-				limite = temp1
-			else:
-				print("O Shopping não pode conter esse numero de pessoas!")
-				temp1 = 0
-		except:
-			temp1 = 0
-if sou == "l":
-	id = 0
-	while id <= 0:
-		print("Digite o Identificador da Loja:")
-		try:
-			id = int(input(""))
-		except:
-			id = 0
-de = ""
-while de != "f" and de != "c":
-	try:
-		print("f - Funcionarios")
-		print("c - Clientes")
-		de = input("").lower()
-	except:
-		de = ""
-
-# Função que entra em loop infinito, para receber pacotes da rede
-# independente de onde venha o pacote, este é processado e avaliado
-# para 3 casos: se o pacote é um que o próprio peer enviou, se foi
-# enviado por outro peer, ou se foi enviado pelo tracker
-def receber():
-	global s, eu, peers, ip, port, limite, total, sou, estou, de, id
+	print("Em qual andar eu estou?")
 	while True:
 		try:
-			data = s.recvfrom(15000)
-			# confirmar a entrega do pacote
-			s.sendto(pickle.dumps("OK"),data[1])
-			# Caso a mensagem seja enviada pelo servidor, devemos
-			# avaliar qual é o tipo de informação que ele recebeu
-			# poís um novo peer pode ter entrado e o tracker pode
-			# estar atualizando a variavel 'peers' para que este
-			# nó saíba quem enviou a mensagem.
-			if data[1][0] == ip and data[1][1] == port:
-				try:
-					for x in pickle.loads(data[0]):
-						if x == "ip":
-							eu = pickle.loads(data[0])["ip"]
-						if x == "list":
-							peers = pickle.loads(data[0])["list"]
-				except:
-					pass
-			# Caso este peer envie um pacote e ele acabe interceptando
-			# o próprio pacote, não há a necessidade de se fazer nada,
-			# mas o caso deve ser tratado para que não ocorram erros na
-			# ultima parte.
-			elif data[1][0] == eu[0] and data[1][1] == eu[1]:
+			estou = int(input(""))
+			break
+		except:
+			estou = 0
+if sou == "l":
+	print("Qual é o ID da loja?")
+	while True:
+		try:
+			id = int(input(""))
+			break
+		except:
+			id = 0
+print("Qual é o seu limite de pessoas?")
+while True:
+	try:
+		limite = int(input(""))
+		break
+	except:
+		limite = 0
+print("Peer Rodando!")
+
+def RECEBER():
+	global s, h, peer, list, sou, estou, id, limite, total
+	while True:
+		try:
+			d = s.recvfrom(1024)
+			s.sendto(pickle.dumps("OK"),d[1])
+			# Processar caso esteja na rede
+			if pickle.dumps(d[1]) in list:
+				data = pickle.loads(d[0])
+				for x in data:
+					if list[pickle.dumps(d[1])] < x:
+						list[pickle.dumps(d[1])] = x
+						# PROCESSAR MENSAGEM AQUI
+						temp2 = ""
+						for temp1 in data[x]:
+							if temp1 == "entrou":
+								temp2 = "entrou"
+							if temp1 == "saiu":
+								temp2 = "saiu"
+						if temp2 == "entrou":
+							if sou == "s" and data[x]['de'].split(";")[0] == "f":
+								# Caso eu seja o Shopping mas passe do limite de pessoas
+								# enviar um pacote informando que pessoas foram barradas
+								if total+data[x]['entrou'] > limite:
+									pass
+								# Caso eu seja o Shopping eu Processo
+								elif total+data[x]['entrou'] <= limite:
+									total = total+data[x]['entrou']
+							# Caso eu me identico como o mesmo Peer
+							if data[x]['sou'].split(";")[0] == sou and data[x]['sou'].split(";")[1] == str(estou) and data[x]['sou'].split(";")[2] == str(id):
+								if total+data[x]['entrou'] > limite:
+									pass # Mensagem de pessoas barradas
+								elif total+data[x]['entrou'] <= limite:
+									total = total+data[x]['entrou']
+							# Caso eu seja de onde veio
+							if data[x]['de'].split(";")[0] == sou and data[x]['de'].split(";")[1] == str(estou) and data[x].split(";")[2] == str(id):
+								if total-data[x]['entrou'] < 0:
+									pass # Mensagem de que não é possivel
+								elif total-data[x]['entrou'] >= 0:
+									total = total-data[x]['entrou']
+						elif temp2 == "saiu":
+							# Caso eu seja o shopping e elas tenham saido
+							if sou == "s" and data[x]['para'].split(";")[0] == "f":
+								if total-data[x]['saiu'] < 0:
+									pass
+								elif total-data[x]['saiu'] >= 0:
+									total = total-data[x]['saiu']
+							# Caso eu seja de onde elas sairam
+							if data[x]['sou'].split(";")[0] == sou and data[x]['sou'].split(";")[1] == str(estou) and data[x]['sou'].split(";")[2] == str(id):
+								if total-data[x]['saiu'] < 0:
+									pass # Mensagem de pessoas barradas
+								elif total-data[x]['saiu'] >= 0:
+									total = total-data[x]['saiu']
+							# Caso eu seja para onde as pessoas foram
+							if data[x]['para'].split(";")[0] == sou and data[x]['para'].split(";")[1] == str(estou) and data[x]['para'].split(";")[2] == str(id):
+								if total+data[x]['saiu'] > limite:
+									pass # Mensagem de pessoas barradas
+								elif total+data[x]['saiu'] <= limite:
+									total = total+data[x]['saiu']
+						print(data[x])
+					else:
+						break
+			# Ignorar caso seja um pacote próprio
+			elif d[1][0] == peer[0] and d[1][1] == peer[1]:
 				pass
-			# Caso a mensagem seja diferente das duas anteriores, então
-			# provavelmente ela foi enviada de outro peer presente na
-			# rede, para isso:
-			else:
-				# Primeiramente precisamos verificar na variavel peers
-				# se a mensagem veio de um peer existente na rede, quase
-				# como se fosse uma autenticação de usuario.
-				n = 0
-				for x in peers:
-					if data[1][0] == pickle.loads(x)[0] and data[1][1] == pickle.loads(x)[1]:
-						n = 1
-				# No caso do Usuario ter sido autenticado, ou seja a 
-				# variavel 'n' é igual a 1 pois a mensagem veio de um
-				# peer na rede, ele processa a informação.
-				if n == 1:
-					data = pickle.loads(data[0])
-					# analisar o data['sou'] para saber o que fazer
-					# analisar o data['para'] para saber onde a pessoa foi
-					try:
-						d = data["saiu"]
-						if d >= 0 and d <= limite:
-							# Se o lugar de onde veio fica no mesmo andar, e veio para quem eu sou quando sou o andar
-							# então faz sentido aparecer para mim
-							if data['sou'].split(";")[0] == estou and data['para'] == str(estou)+sou:
-								# Isso é a falha criada pelo numero irregular de pessoas
-								if total-d >= 0:
-									total = total-d
-								else:
-									total = d-total
-							# Tratamento para o caso do peer duplo
-							elif data['sou'].split(";")[0] == estou and data['sou'].split(";")[1] == sou and data['sou'].split(";")[2] == de and data['sou'].split(";")[3] == id:
-								# Isso é a falha criada pelo numero irregular de pessoas
-								if total-d >= 0:
-									total = total-d
-								else:
-									total = d-total
-							# Tratamento para o caso de eu ser uma loja
-							elif data['sou'].split(";")[0] == estou and data['para'] == sou+str(id):
-								total = d # ISSO ESTÁ ERRADO, O CALCULO TÁ ERRADO MAS EU NÃO SEI COMO CONCERTAR ISSO SEM COMPROMETER A REDE ATÉ AGORA!
-							# Tratamento caso a pessoa esteja indo embora do primeiro andar
-							elif data['sou'] == str(estou)+";"+sou+";"+de+";"+str(id) and data['para'] == 's' and estou == 1:
-								total = d
-					except:
-						pass
-					try:
-						d = data["entrou"]
-						if d >= 0 and d <= limite:
-							# Se alguem entrou lá vindo daqui, o numero daqui é a diferença daqui menos o de lá
-							# assim sabendo no caso de andares
-							if data['sou'].split(";")[0] == estou and data['para'] == str(estou)+sou:
-								# Isso é a falha criada pelo numero irregular de pessoas
-								if total-d >= 0:
-									total = total-d
-								else:
-									total = d-total
-							# Se alguem entrou lá vindo daqui, porem esse é o caso de lojas
-							elif data['sou'].split(";")[0] == str(estou) and data['para'] == sou+str(id):
-								# Isso é a falha criada pelo numero irregular de pessoas
-								if total-d >= 0:
-									total = total-d
-								else:
-									total = d-total
-							# Caso alguem troque de andar
-							elif data['sou'].split(";")[1] == sou and sou == 'a' and int(math.sqrt((int(data['sou'].split(";")[0])-estou)**2)) == 1:
-								# Isso é a falha criada pelo numero irregular de pessoas
-								if total-d >= 0:
-									total = total-d
-								else:
-									total = d-total
-							# Tratamento caso alguem tenha entrado no shopping
-							elif data['sou'].split(";")[1] == 's' and data['para'] == 's' and sou == 'a' and estou == 1:
-								total = d
-					except:
-						pass
-					print("Dados Atualizados")
+			# Caso seja uma atualização do Tracker
+			elif d[1][0] == h and d[1][1] == 15000:
+				for x in pickle.loads(d[0]):
+					if x == "list":
+						list = pickle.loads(d[0])["list"]
 		except:
 			pass
 
-# Aqui nós utilizamos a biblioteca threading para executar a 
-# função RECEBER em paralelo, permitindo que o código funcione
-# com varias coisas ao mesmo tempo.
-threading.Thread(target=receber, args=()).start()
-
-# Esta é uma função para enviar mensagens para outros peers,
-# nela busca-se enviar mensagens para todos os peers dentro
-# da rede, até mesmo para si próprio, evitando ao maximo que
-# peers não recebam a mensagem.
-def falar(info,tipo,saida):
-	global s, peers, estou, sou, de, id
-	# Acontece para todos os peers
-	for x in peers:
-		# Envia até 10 mensagens esperando uma resposta antes de desistir
-		t = 0
+def ENVIAR(data):
+	global s, h, peer, list
+	# Atualizando o pacote atual
+	list[pickle.dumps(peer)]+=1
+	for x in list:
+		s.sendto(pickle.dumps({list[pickle.dumps(peer)]:data}),pickle.loads(x))
+		d = s.recvfrom(1024)
+		n = 0
 		while True:
-			# É preciso o try para tratar a possibilidade de uma falha no envio de mensagem
-			# a informação 'sou' é andar;s/a/l;f/c;id
-			try:
-				s.sendto(pickle.dumps({tipo:info,"sou":str(estou)+";"+sou+";"+de+";"+str(id),"para":saida}),pickle.loads(x))
-				t+=1
-				if t >= 10:
-					break
-				d = s.recvfrom(10000)
-				# Garantindo que a confirmação veio
-				if d[1][0] == pickle.loads(x)[0] and d[1][1] == pickle.loads(x)[1] and pickle.loads(d[0]) == "OK":
-					break
-			except:
-				t+=1
-				if t >= 10:
-					break
+			n+=1
+			if pickle.loads(d[0]) == "OK" and d[1][0] == pickle.loads(x)[0] and d[1][1] == pickle.loads(x)[1]:
+				break
+			else:
+				s.sendto(pickle.dumps({list[pickle.dumps(peer)]:data}),pickle.loads(x))
+				d = s.recvfrom(1024)
+			if n > 10:
+				break
 
-# Loop de Comandos, para que seja possivel simular o sensor
-# que passa informações de quem entrou ou saiu. Dentro do Loop
-# não há variaveis que são modificadas a não ser a variavel
-# total que já foi descrita antes, variaveis como 'n', 'temp1' e 'temp2'
-# são variaveis temporarias para a solicitação de um valor e
-# depois são descartadas
+threading.Thread(target=RECEBER, args=()).start()
+
 while True:
-	# "i" é uma variavel apenas para receber comandos e simular
-	# a existencia de um sensor recebendo informações sobre quem
-	# entra e quem sai, nesse caso estamos assumindo que todos
-	# os sensores funcionam com perfeição e sem erros.
-	i = input("")
-	if i == "mPeer":
-		print("Meu Peer: "+str(eu))
-	elif i == "mPeers":
-		print("Lista de Peers: ")
-		# Um for que serve para varrer a lista de peers e listar eles na tela
-		for x in peers:
-			print(pickle.loads(x))
-	elif i == "status":
-		print("Limite:      "+str(limite))
-		print("Atualmente:  "+str(total))
-		# Falando o que é o peer
+	nova = input("")
+	if nova == "help" or nova == "ajuda" or nova == "h":
+		print("Lista de Comandos")
+		print("help - para exibir lista de comandos")
+		print("status - para visualizar quem eu sou na rede")
+		print("saiu - para indicar que um numero de pessoas saiu")
+		print("entrou - para indicar que um numero de pessoas entrou")
+		print("peer - para ver qual peer eu sou")
+		print("peers - para ver lista de peers")
+	if nova == "status":
 		if sou == "s":
-			print("Eu sou:      Shopping")
-		elif sou == "a":
-			print("Eu sou:      "+str(estou)+"º andar")
-		elif sou == "l":
-			print("Eu sou:      loja no "+str(estou)+"º andar")
-	elif i == "help":
-		print("Lista de Comandos:")
-		print("mPeer -> Ver o meu Peer")
-		print("mPeers -> Ver lista de Peers")
-		print("status -> Ver Estado do Shopping")
-		print("saiu -> Informar saída de pessoas")
-		print("entrou -> Informar entrada de pessoas")
-	elif i == "saiu":
-		# Determinando quantidade de pessoas que sairam
-		n = 0
-		while n <= 0:
+			print("Eu sou o Shopping")
+		if sou == "a":
+			print("Eu sou o "+str(estou)+"º andar")
+		if sou == "l":
+			print("Eu sou a loja "+str(id)+" localizada no "+str(estou)+"º andar")
+		print("Temos "+str(total)+"/"+str(limite)+" pessoas")
+	if nova == "peer":
+		print("Eu sou o Peer: "+str(peer[0])+":"+str(peer[1]))
+	if nova == "peers":
+		print("Lista de Peers:")
+		for x in list:
+			print(pickle.loads(x))
+	if nova == "entrou":
+		temp1 = 0
+		while temp1 <= 0:
 			try:
-				n = int(input(">> "))
+				temp1 = int(input(">>"))
 			except:
-				n = 0
-		# Determinando localização para onde a pessoa foi
-		temp1 = ""
-		print("Indo para: ")
-		while temp1 != "s" and temp1 != "a" and temp1 != "l":
+				pass
+		print("De onde?")
+		print("f - Fora")
+		print("a - Andar")
+		print("l - Loja")
+		temp2 = ""
+		while temp2 != "f" and temp2 != "a" and temp2 != "l":
 			try:
-				print("s - Saindo do Shopping")
-				print("a - Indo para outro Andar")
-				print("l - Indo para outra Loja")
-				temp1 = input("").lower()
+				temp2 = input("").lower()
 			except:
-				temp1 = ""
-		if temp1 == "a":
-			temp2 = 0
-			while temp2 == 0:
+				pass
+		temp3 = 0
+		if temp2 == "a" or temp2 == "l":
+			print("De qual andar?")
+			while temp3 <= 0:
 				try:
-					print("Qual Andar?")
-					temp2 = int(input(""))
+					temp3 = int(input(""))
 				except:
-					temp2 = 0
-			temp1 = str(temp2)+temp1
-		elif temp1 == "l":
-			temp2 = 0
-			while temp2 == 0:
+					pass
+		temp4 = 0
+		if temp2 == "l":
+			print("Qual id da loja?")
+			while temp4 <= 0:
 				try:
-					print("Qual o ID da loja?")
-					temp2 = int(input(""))
+					temp4 = int(input(""))
 				except:
-					temp2 = 0
-			temp1 = temp1+str(temp2)
-		# Comparar com o numero total atual
-		if total >= n:
-			total-=n
-			falar(total,"saiu",temp1)
+					pass
+		if total+temp1 > limite:
+			print("Passou do Limite")
 		else:
-			print("Não há esse numero de pessoas no Shopping")
-	elif i == "entrou":
-		# Determinando quantidade de pessoas que entraram
-		n = 0
-		while n <= 0:
+			total = total+temp1
+			ENVIAR({"sou":sou+";"+str(estou)+";"+str(id),"entrou":temp1,"de":temp2+";"+str(temp3)+";"+str(temp4)})
+	if nova == "saiu":
+		temp1 = 0
+		while temp1 <= 0:
+			temp1 = int(input(">>"))
+		print("Para onde?")
+		print("f - Fora")
+		print("a - Andar")
+		print("l - Loja")
+		temp2 = ""
+		while temp2 != "f" and temp2 != "a" and temp2 != "l":
 			try:
-				n = int(input(">> "))
+				temp2 = input("").lower()
 			except:
-				n = 0
-		# Determinando localização para onde a pessoa foi
-		temp1 = ""
-		print("Vindo de: ")
-		while temp1 != "s" and temp1 != "a" and temp1 != "l":
-			try:
-				print("s - Entrando no Shopping")
-				print("a - Vindo de outro Andar")
-				print("l - Vindo de outra Loja")
-				temp1 = input("").lower()
-			except:
-				temp1 = ""
-		if temp1 == "a":
-			temp2 = 0
-			while temp2 == 0:
+				pass
+		temp3 = 0
+		if temp2 == "a" or temp2 == "l":
+			print("De qual andar?")
+			while temp3 <= 0:
 				try:
-					print("Qual Andar?")
-					temp2 = int(input(""))
+					temp3 = int(input(""))
 				except:
-					temp2 = 0
-			temp1 = str(temp2)+temp1
-		elif temp1 == "l":
-			temp2 = 0
-			while temp2 == 0:
+					pass
+		temp4 = 0
+		if temp2 == "l":
+			print("Qual id da loja?")
+			while temp4 <= 0:
 				try:
-					print("Qual o ID da loja?")
-					temp2 = int(input(""))
+					temp4 = int(input(""))
 				except:
-					temp2 = 0
-			temp1 = temp1+str(temp2)
-		# Comparar com o limite maximo de pessoas
-		if total+n <=limite:
-			total+=n
-			falar(total,"entrou",temp1)
+					pass
+		if total-temp1 < 0:
+			print("Não temos esse numero de pessoas")
 		else:
-			print("Barradas de Entrar")
-	else:
-		print("Comando não Reconhecido")
+			total = total-temp1
+			ENVIAR({"sou":sou+";"+str(estou)+";"+str(id),"saiu":temp1,"para":temp2+";"+str(temp3)+";"+str(temp4)})
 
-print("FIM")
+# A variavel list é uma biblioteca, onde a informação primeira é a localização do peer
+# e a informação que ela guarda é a quantidade de pacotes que ela já enviou pela rede,
+# assim se torna possivel saber qual pacote ela está enviando atualmente, e diferenciar
+# de pacotes que já foram enviados anteriormente.
+
+"""
+ERROS:
+- Não modifique informações pelo peer Shopping! Outros Peers não processam mensagens dele
+- Andares podem não processar quando uma loja modifica informações dele próprio
+
+FAZER:
+- Barramento por parte de shopping, lojas e andares
+"""
+
+
+
+
+
+
+
+
 

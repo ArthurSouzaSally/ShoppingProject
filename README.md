@@ -28,10 +28,6 @@ contendo os dados de entrada, apenas o tracker pode autenticar a entrada de novo
 Dentro de um Sistema P2P, é preciso que alguem faça a autenticação dos usuarios, e precisa ser alguem de confiança, os
 peers nunca podem ter acesso direto ao arquivo onde estão guardados os dados dos usuarios, se não existe problemas para
 manter a segurança e a garantia de que os usuarios são autenticos.<br/>
-<h4>Versão 1.3</h4>
-Foi adicionada durante o envio das mensagens entre clientes uma função para a variavem 'temp1' que serve para indicar a
-possivel localização que uma pessoa foi de um lugar para outro, e como isso também foi adicionado ao pacote que é enviado
-de um peer para outro, logo já é possivel determinar para onde cada pessoa foi, só falta a construção dessa lógica na
-área que recebe essa informação.<br/>
-<h4>Versão 1.4</h4>
-- Criar Hierarquia na Lógica de Recebimento de Pacotes
+<h4>Versão 1.3 : EM BREVE</h4>
+- Fazer um sistema para diferenciar mais entradas, funcionarios, clientes, etc...<br/>
+- Junto a isso criar o sistema de hierarquia dentro de cada peer, assim eles funcionam sozinhos.<br/>
