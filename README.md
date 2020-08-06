@@ -31,9 +31,15 @@ manter a segurança e a garantia de que os usuarios são autenticos.<br/>
 <h4>Versão 1.3</h4>
 O codigo inteiro foi refeito, mas o sistema de login e senha já foi implementado, assim como o funcionamento do tracker
 que funciona perfeitamente, os pacotes se tornaram mais complexos e foi implementado um sistema para diferenciar quais
-pacotes são mais novos e quais são mais velhos, assim permitindo uma implementação mais segura do codigo.
+pacotes são mais novos e quais são mais velhos, assim permitindo uma implementação mais segura do codigo.<br/><br/>
 A hierarquia foi implementada, mas por problemas no envio de pacotes ainda preciso tornar o UDP ainda mais seguro com
-uma confirmação maior de que os pacotes foram processados.
-<h4>Versão 1.4 : Em BREVE</h4>
+uma confirmação maior de que os pacotes foram processados.<br/>
+<h4>Versão 1.4</h4>
+Agora quando um peer recebe um pacote sobre a entrada de pessoas que supera o numero limite de pessoas na sua área ele
+envia um pacote de recusa informando o contrario, assim nivelando os numeros dentro da rede, além disso foi corrigido
+a coerencia dos pacotes enviados e processados por diferentes partes diminuindo erros de comunicação.<br/><br/>
+Pacotes são processados na ordem em que eles chegam, além de que o sistema é capaz de diferenciar pacotes mais velhos
+de pacotes mais recentes, pois guarda na lista de peers quantos pacotes ele já recebeu de cada peer, e como pacotes na
+rede são enumerados é possivel diferenciar o que veio primeiro e o que veio depois.<br/>
+<h4>Versão 1.5 : EM BREVE</h4>
 - Melhorar ainda mais o sistema de envio de mensagens para deixa-lo seguro.<br/>
-- Criar um sistema de recusa por parte dos peers que envia pacotes corrigindo numeros<br/>
