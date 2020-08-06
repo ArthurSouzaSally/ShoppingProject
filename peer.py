@@ -1,4 +1,3 @@
-
 import socket, pickle, threading
 
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -85,7 +84,7 @@ while True:
 print("Peer Rodando!")
 
 def RECEBER():
-	global s, h, peer, list, sou, estou, id, limite, total
+	global s, h, peer, list, sou, estou, id, limite, total, interrupt
 	while True:
 		try:
 			d = s.recvfrom(1024)
@@ -108,41 +107,44 @@ def RECEBER():
 								# Caso eu seja o Shopping mas passe do limite de pessoas
 								# enviar um pacote informando que pessoas foram barradas
 								if total+data[x]['entrou'] > limite:
-									pass
+									ENVIAR({"sou":data[x]['sou'],"saiu":data[x]['entrou'],"para":data[x]['de']})
 								# Caso eu seja o Shopping eu Processo
 								elif total+data[x]['entrou'] <= limite:
 									total = total+data[x]['entrou']
 							# Caso eu me identico como o mesmo Peer
 							if data[x]['sou'].split(";")[0] == sou and data[x]['sou'].split(";")[1] == str(estou) and data[x]['sou'].split(";")[2] == str(id):
 								if total+data[x]['entrou'] > limite:
-									pass # Mensagem de pessoas barradas
+									ENVIAR({"sou":data[x]['sou'],"saiu":data[x]['entrou'],"para":data[x]['de']}) # Mensagem de pessoas barradas
 								elif total+data[x]['entrou'] <= limite:
 									total = total+data[x]['entrou']
 							# Caso eu seja de onde veio
 							if data[x]['de'].split(";")[0] == sou and data[x]['de'].split(";")[1] == str(estou) and data[x].split(";")[2] == str(id):
 								if total-data[x]['entrou'] < 0:
-									pass # Mensagem de que não é possivel
+									ENVIAR({"sou":data[x]['sou'],"saiu":data[x]['entrou'],"para":data[x]['de']}) # Mensagem de que não é possivel
 								elif total-data[x]['entrou'] >= 0:
 									total = total-data[x]['entrou']
 						elif temp2 == "saiu":
 							# Caso eu seja o shopping e elas tenham saido
 							if sou == "s" and data[x]['para'].split(";")[0] == "f":
 								if total-data[x]['saiu'] < 0:
-									pass
+									ENVIAR({"sou":data[x]['sou'],"entrou":data[x]['saiu'],"de":data[x]['para']})
 								elif total-data[x]['saiu'] >= 0:
 									total = total-data[x]['saiu']
 							# Caso eu seja de onde elas sairam
 							if data[x]['sou'].split(";")[0] == sou and data[x]['sou'].split(";")[1] == str(estou) and data[x]['sou'].split(";")[2] == str(id):
 								if total-data[x]['saiu'] < 0:
-									pass # Mensagem de pessoas barradas
+									ENVIAR({"sou":data[x]['sou'],"entrou":data[x]['saiu'],"de":data[x]['para']}) # Mensagem de pessoas barradas
 								elif total-data[x]['saiu'] >= 0:
 									total = total-data[x]['saiu']
 							# Caso eu seja para onde as pessoas foram
 							if data[x]['para'].split(";")[0] == sou and data[x]['para'].split(";")[1] == str(estou) and data[x]['para'].split(";")[2] == str(id):
 								if total+data[x]['saiu'] > limite:
-									pass # Mensagem de pessoas barradas
+									ENVIAR({"sou":data[x]['sou'],"entrou":data[x]['saiu'],"de":data[x]['para']}) # Mensagem de pessoas barradas
 								elif total+data[x]['saiu'] <= limite:
 									total = total+data[x]['saiu']
+						elif temp2 == "":
+							if data == "OK":
+								interrupt = 1
 						print(data[x])
 					else:
 						break
@@ -157,23 +159,24 @@ def RECEBER():
 		except:
 			pass
 
+interrupt = 0
+
 def ENVIAR(data):
-	global s, h, peer, list
+	global s, h, peer, list, interrupt
 	# Atualizando o pacote atual
 	list[pickle.dumps(peer)]+=1
 	for x in list:
 		s.sendto(pickle.dumps({list[pickle.dumps(peer)]:data}),pickle.loads(x))
 		d = s.recvfrom(1024)
-		n = 0
 		while True:
-			n+=1
+			if interrupt == 1:
+				interrupt = 0
+				break
 			if pickle.loads(d[0]) == "OK" and d[1][0] == pickle.loads(x)[0] and d[1][1] == pickle.loads(x)[1]:
 				break
 			else:
 				s.sendto(pickle.dumps({list[pickle.dumps(peer)]:data}),pickle.loads(x))
 				d = s.recvfrom(1024)
-			if n > 10:
-				break
 
 threading.Thread(target=RECEBER, args=()).start()
 
@@ -284,16 +287,6 @@ while True:
 ERROS:
 - Não modifique informações pelo peer Shopping! Outros Peers não processam mensagens dele
 - Andares podem não processar quando uma loja modifica informações dele próprio
-
 FAZER:
 - Barramento por parte de shopping, lojas e andares
 """
-
-
-
-
-
-
-
-
-
