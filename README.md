@@ -41,5 +41,16 @@ a coerencia dos pacotes enviados e processados por diferentes partes diminuindo 
 Pacotes são processados na ordem em que eles chegam, além de que o sistema é capaz de diferenciar pacotes mais velhos
 de pacotes mais recentes, pois guarda na lista de peers quantos pacotes ele já recebeu de cada peer, e como pacotes na
 rede são enumerados é possivel diferenciar o que veio primeiro e o que veio depois.<br/>
-<h4>Versão 1.5 : EM BREVE</h4>
-- Melhorar ainda mais o sistema de envio de mensagens para deixa-lo seguro.<br/>
+<h4>Versão 1.5</h4>
+O sistema de envio de mensagens foi totalmente refeito para um sistema onde os pacotes são enumerados para assumir a
+lógica de um relogio lógico, e as mensagens são enviadas em exesso na rede, quando um peer recebe um pacote, ele vai e
+verifica se aquele pacote já foi levado em consideração, e quando já foi apenas o ignora, se não ele o processa e já
+aguarda pelo envio do proximo, esse foi o sistema que se mostrou mais eficiente até agora.<br/><br/>
+Na versão anterior tinha sido adicionado um sistema de recusa de pacotes que retornava pacotes quando estes superavam
+o limite de pessoas já existentes na área marcada pelo peer, agora esse sistema além de ter sido mais otimizado, foi
+concertado alguns bugs que existiam por causa de uma falta de segurança no envio das mensagens, o que faz o sistema
+funcionar com maior exatidão.<br/><br/>
+Eu tentei também criar um sistema de simulação de entradas e saídas, mas eu fiz merda e as coisas precisam ser feitas
+de novo para ter uma qualidade maior, por que como tá ficou uma verdadeira bagunça.<br/>
+<h4>Versão 1.6 : EM BREVE</h4>
+- Refazer o sistema de simulação de entradas e saídas para cada peer.
