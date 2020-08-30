@@ -94,16 +94,40 @@ while sim != "s" and sim != "y" and sim != "n":
 		sim = ""
 
 print("Peer Rodando!")
+
 # Mensagem enviada do Peer
 pEnviar = ""
 
+# Corelação dos Peers:
+ipeers = {}
+
+# Para saber média de envio de pacotes
+npm = npms = npmq = 0
+npmt = time.time()
+
 def RECEBER():
-	global s, h, peer, peers, pEnviar, sou, estou, id, atual, limite
+	global s, h, peer, peers, pEnviar, ipeers, sou, estou, id, atual, limite, npm, npmt, npms, npmq
 	while True:
 		# Enviar Pacotes para Outros Peers
 		try:
-			for x in peers:
-				s.sendto(pickle.dumps({peers[pickle.dumps(peer)]:pEnviar}),pickle.loads(x))
+			# Caso a informação seja desigual, precisa enviar a todos se não quer dizer que alguem pode ficar sem informação
+			if len(peers)-1 != len(ipeers):
+				for x in peers:
+					s.sendto(pickle.dumps({peers[pickle.dumps(peer)]:pEnviar}),pickle.loads(x))
+			# Caso a informação seja igual, quer dizer que eu posso procurar quem realmente precisa receber informação
+			else:
+				for x in ipeers:
+					# Somente peers onde a informação é direcionada tem envio de pacotes
+					if pEnviar["para"] == ipeers[x] or pEnviar["de"] == ipeers[x] or pEnviar["de"].split(";")[0] == "f" or pEnviar["para"].split(";")[0] == "f":
+						s.sendto(pickle.dumps({peers[pickle.dumps(peer)]:pEnviar}),pickle.loads(x))
+					else:
+						npm+=1
+			if time.time() - npmt > 1:
+				npmt = time.time()
+				if npm > 0:
+					npmq+=1
+					npms+=npm
+					npm = 0
 		except:
 			pass
 		# Receber Pacotes
@@ -145,6 +169,7 @@ def RECEBER():
 						if x == "saiu":
 							n = 3
 				if n == 2: # Entrou
+					ipeers[pickle.dumps(d[1])] = data["para"]
 					# Caso eu seja o shopping, alguem entrou no shopping
 					if sou == "s" and data["de"].split(";")[0] == "f":
 						if atual+data["entrou"] <= limite:
@@ -167,6 +192,7 @@ def RECEBER():
 							pEnviar = {"saiu":data["entrou"],"de":data["para"],"para":data["de"]}
 							peers[pickle.dumps(peer)]+=1
 				if n == 3: # Saiu
+					ipeers[pickle.dumps(d[1])] = data["de"]
 					# Caso eu seja o shopping e alguem tenha saido para fora
 					if sou == "s" and data["para"].split(";")[0] == "f":
 						if atual-data["saiu"] >= 0:
@@ -205,9 +231,19 @@ if sim == "n":
 		elif a.lower() == "peer":
 			print(peer)
 		elif a.lower() == "peers":
-			print("Lista de Peers:")
-			for x in peers:
-				print(str(pickle.loads(x))+" : "+str(peers[x]))
+			if len(peers) > 1:
+				print("Lista de Peers:")
+				for x in peers:
+					print(str(pickle.loads(x))+" : "+str(peers[x]))
+			else:
+				print("Não há peers além de você")
+		elif a.lower() == "ipeers":
+			if len(ipeers) > 0:
+				print("Identidades:")
+				for x in ipeers:
+					print(str(pickle.loads(x))+" : "+str(ipeers[x]))
+			else:
+				print("Não há identidades")
 		elif a.lower() == "status":
 			if sou == "s":
 				print("Eu sou o Shopping")
@@ -216,6 +252,11 @@ if sim == "n":
 			if sou == "l":
 				print("Sou uma Loja no "+str(estou)+"º Andar, com o ID "+str(id))
 			print("Com um total de "+str(atual)+"/"+str(limite)+" pessoas")
+		elif a.lower() == "media":
+			try:
+				print("Numero de Pacotes Descartados em Média: "+str(float(npms/npmq)))
+			except:
+				print("ERRO")
 		elif a.lower() == "entrou":
 			# Informações para outros peers
 			temp1 = 0
