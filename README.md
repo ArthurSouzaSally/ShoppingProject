@@ -52,5 +52,13 @@ concertado alguns bugs que existiam por causa de uma falta de segurança no envi
 funcionar com maior exatidão.<br/><br/>
 Eu tentei também criar um sistema de simulação de entradas e saídas, mas eu fiz merda e as coisas precisam ser feitas
 de novo para ter uma qualidade maior, por que como tá ficou uma verdadeira bagunça.<br/>
-<h4>Versão 1.6 : EM BREVE</h4>
-- Refazer o sistema de simulação de entradas e saídas para cada peer.
+<h4>Versão 1.6</h4>
+Foi adicionado um sistema de hierarquia de rede para diminuir o numero de pacotes enviados na rede, agora existe uma
+variavel que salva as identidades dos peers, e quando um pacote precisa ser enviado ele lê essa variavel para ver se
+todos precisam receber o pacote ou se apenas um grupo seleto precisa, assim reduzindo o numero de pacotes enviados na
+rede.<br/><br/>
+Os comandos novos são 'ipeers' para ver a identidades dos peers na rede, 'media' para ver o numero de pacotes que <b>NÃO</b>
+é enviado na rede por causa das identidades, a unica desvantagem é que elas só passam a funcionar depois que todos os peers
+se comunicaram, ou seja no inicio quando não há informação sobre a identidade dos peers, a fim de evitar falhas, todos os
+peers recebem pacotes normalmente.<br/>
+<h4>Versão 1.7 : EM BREVE</h4>
