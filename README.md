@@ -62,3 +62,5 @@ Os comandos novos são 'ipeers' para ver a identidades dos peers na rede, 'media
 se comunicaram, ou seja no inicio quando não há informação sobre a identidade dos peers, a fim de evitar falhas, todos os
 peers recebem pacotes normalmente.<br/>
 <h4>Versão 1.7 : EM BREVE</h4>
+- Resolver bugs ainda presentes nos peers<br/>
+- Criar Criptografia que presta<br/>
