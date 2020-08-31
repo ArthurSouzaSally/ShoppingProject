@@ -64,3 +64,5 @@ peers recebem pacotes normalmente.<br/>
 <h4>Versão 1.7 : EM BREVE</h4>
 - Resolver bugs ainda presentes nos peers<br/>
 - Criar Criptografia que presta<br/>
+- Resolver problema de modificações do peer "Shopping"<br/>
+
