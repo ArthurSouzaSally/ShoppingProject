@@ -225,8 +225,13 @@ if sim == "n":
 		if a.lower() == "help" or a.lower == "ajuda" or a.lower == "socorro":
 			print("Lista de Comandos:")
 			print("help -> Para Mostrar essa Lista de Comandos")
+			print("status -> Para ver quem eu sou e qual a quantidade de pessoas aqui")
 			print("peer -> Para Mostrar quem eu sou na Rede")
 			print("peers -> Para Mostrar Lista de Peers e quantos pacotes foram enviados por cada")
+			print("ipeers -> Mostra a identidade dos Peers")
+			print("media -> Mostra numero médio de pacotes descartados para envio")
+			print("entrou -> Para sinalizar que alguem entrou no peer")
+			print("saiu -> Para sinalizar que alguem saíu do peer")
 			print("")
 		elif a.lower() == "peer":
 			print(peer)
