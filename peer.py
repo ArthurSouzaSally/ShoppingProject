@@ -96,7 +96,8 @@ while sim != "s" and sim != "y" and sim != "n":
 print("Peer Rodando!")
 
 # Mensagem enviada do Peer
-pEnviar = ""
+pEnviar = {"entrou":0,"de":"f;0;0","para":sou+";"+str(estou)+";"+str(id)}
+peers[pickle.dumps(peer)]+=1
 
 # Corelação dos Peers:
 ipeers = {}
@@ -230,13 +231,15 @@ if sim == "n":
 			print("peers -> Para Mostrar Lista de Peers e quantos pacotes foram enviados por cada")
 			print("ipeers -> Mostra a identidade dos Peers")
 			print("media -> Mostra numero médio de pacotes descartados para envio")
-			print("entrou -> Para sinalizar que alguem entrou no peer")
-			print("saiu -> Para sinalizar que alguem saíu do peer")
+			if sou != "s":
+				print("entrou -> Para sinalizar que alguem entrou no peer")
+				print("saiu -> Para sinalizar que alguem saíu do peer")
 			print("")
 		elif a.lower() == "peer":
 			print(peer)
 		elif a.lower() == "peers":
 			if len(peers) > 1:
+				print("Há um total de "+str(len(peers))+" atualmente na rede")
 				print("Lista de Peers:")
 				for x in peers:
 					print(str(pickle.loads(x))+" : "+str(peers[x]))
@@ -262,7 +265,7 @@ if sim == "n":
 				print("Numero de Pacotes Descartados em Média: "+str(float(npms/npmq)))
 			except:
 				print("ERRO")
-		elif a.lower() == "entrou":
+		elif a.lower() == "entrou" and sou != "s":
 			# Informações para outros peers
 			temp1 = 0
 			while temp1 <= 0:
@@ -303,7 +306,7 @@ if sim == "n":
 				peers[pickle.dumps(peer)]+=1
 			else:
 				print("Numero Excede o limite de pessoas")
-		elif a.lower() == "saiu":
+		elif a.lower() == "saiu" and sou != "s":
 			# Informações Locais
 			# Informações para outros peers
 			temp1 = 0
@@ -344,6 +347,8 @@ if sim == "n":
 				peers[pickle.dumps(peer)]+=1
 			else:
 				print("Numero é menor do que tem presente")
+		else:
+			print("O comando \""+str(a.lower())+"\" não é reconhecido como um comando")
 else:
 	while True:
 		time.sleep(1)
