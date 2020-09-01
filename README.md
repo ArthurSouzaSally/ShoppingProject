@@ -67,7 +67,8 @@ falha no qual a variavel 'ipeers' era atualizada apenas quando os primeiros paco
 mesmos se atualizam assim que entram na rede. Sem a necessidade do tracker, apenas a própria rede P2P é necessaria, isso
 se dá por pacotes vazios, onde os peers já informam uns aos outros sobre entradas vazias no inicio já se informando sobre
 suas respectivas identidades na rede.<br/>
-<h4>Versão 0.18 : EM BREVE</h4>
-- Criar Criptografia que presta<br/>
+<h4>Versão 0.18</h4>
+Primeiramente agora é necessario que se faça a instalação da biblioteca <code>cryptography</code> pelo pip:<br/><br/>
+<code>pip install cryptography</code>
 
 
