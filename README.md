@@ -61,8 +61,13 @@ Os comandos novos são 'ipeers' para ver a identidades dos peers na rede, 'media
 é enviado na rede por causa das identidades, a unica desvantagem é que elas só passam a funcionar depois que todos os peers
 se comunicaram, ou seja no inicio quando não há informação sobre a identidade dos peers, a fim de evitar falhas, todos os
 peers recebem pacotes normalmente.<br/>
-<h4>Versão 0.17 : EM BREVE</h4>
-- Resolver bugs ainda presentes nos peers<br/>
+<h4>Versão 0.17</h4>
+Agora o Peer "Shopping" é apenas visual, ele não define quem entra nem sai, apenas os andares e lojas, e antes havia uma
+falha no qual a variavel 'ipeers' era atualizada apenas quando os primeiros pacotes eram enviados pelos usuarios, agora os
+mesmos se atualizam assim que entram na rede. Sem a necessidade do tracker, apenas a própria rede P2P é necessaria, isso
+se dá por pacotes vazios, onde os peers já informam uns aos outros sobre entradas vazias no inicio já se informando sobre
+suas respectivas identidades na rede.<br/>
+<h4>Versão 0.18 : EM BREVE</h4>
 - Criar Criptografia que presta<br/>
-- Resolver problema de modificações do peer "Shopping"<br/>
+
 
