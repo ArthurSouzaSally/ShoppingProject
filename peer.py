@@ -366,54 +366,48 @@ if sim == "n":
 		else:
 			print("O comando \""+str(a.lower())+"\" não é reconhecido como um comando")
 else:
+	if sou == "s":
+		print("Eu sou o Shopping")
+	if sou == "a":
+		print("Eu sou o "+str(estou)+"º Andar")
+	if sou == "l":
+		print("Sou uma Loja no "+str(estou)+"º Andar, com o ID "+str(id))
 	while True:
 		time.sleep(1)
-		if random.randint(0,1) == 0: # Entrou
-			temp1 = random.randint(1,limite)
-			temp2 = random.randint(0,2)
-			temp3 = 0
-			if temp2 == 1 or temp2 == 2:
-				temp3 = random.randint(1,5)
-			temp4 = 0
-			if temp2 == 2:
-				temp4 = random.randint(1,100)
-			# Atualizar Informações aqui
-			if temp2 == 0:
-				temp2 = "f"
-			elif temp2 == 1:
-				temp2 = "a"
-			elif temp2 == 2:
-				temp2 = "l"
-			if atual+temp1 <= limite:
-				atual = atual+temp1
-				pEnviar = {"entrou":temp1,"de":temp2+";"+str(temp3)+";"+str(temp4),"para":sou+";"+str(estou)+";"+str(id)}
-				peers[pickle.dumps(peer)]+=1
-		else: # Saiu
-			temp1 = random.randint(1,limite)
-			temp2 = random.randint(0,2)
-			temp3 = 0
-			if temp2 == 1 or temp2 == 2:
-				temp3 = random.randint(1,5)
-			temp4 = 0
-			if temp2 == 2:
-				temp4 = random.randint(1,100)
-			# Atualizar Informações aqui
-			if temp2 == 0:
-				temp2 = "f"
-			elif temp2 == 1:
-				temp2 = "a"
-			elif temp2 == 2:
-				temp2 = "l"
-			if atual-temp1 >= 0:
-				atual = atual-temp1
-				pEnviar = {"saiu":temp1,"de":sou+";"+str(estou)+";"+str(id),"para":temp2+";"+str(temp3)+";"+str(temp4)}
-				peers[pickle.dumps(peer)]+=1
-		if sou == "s":
-			print("Eu sou o Shopping")
-		if sou == "a":
-			print("Eu sou o "+str(estou)+"º Andar")
-		if sou == "l":
-			print("Sou uma Loja no "+str(estou)+"º Andar, com o ID "+str(id))
+		if sou != "s":
+			try:
+				if random.randint(0,1) == 0: # Entrou
+					temp1 = random.randint(1,20)
+					temp2 = random.randint(0,len(ipeers))
+					if temp2 == 0:
+						temp3 = "f;0;0"
+					else:
+						for x in ipeers:
+							temp2-=1
+							temp3 = ipeers[x]
+							if temp2 == 0:
+								break
+					if atual+temp1 <= limite and temp3.split(";")[0] != "s":
+						atual = atual+temp1
+						pEnviar = {"entrou":temp1,"de":temp3,"para":sou+";"+str(estou)+";"+str(id)}
+						peers[pickle.dumps(peer)]+=1
+				else: # Saiu
+					temp1 = random.randint(1,20)
+					temp2 = random.randint(0,len(ipeers))
+					if temp2 == 0:
+						temp3 = "f;0;0"
+					else:
+						for x in ipeers:
+							temp2-=1
+							temp3 = ipeers[x]
+							if temp2 == 0:
+								break
+					if atual-temp1 >= 0 and temp3.split(";")[0] != "s":
+						atual = atual-temp1
+						pEnviar = {"saiu":temp1,"de":sou+";"+str(estou)+";"+str(id),"para":temp3}
+						peers[pickle.dumps(peer)]+=1
+			except:
+				pass
 		print("Com um total de "+str(atual)+"/"+str(limite)+" pessoas")
 
 print("FIM")
