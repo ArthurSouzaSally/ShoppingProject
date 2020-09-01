@@ -75,5 +75,4 @@ envia para eles uma chave de criptografia que é usada tanto para criptografar q
 são enviadas na rede, a chave é modificada toda vez que o tracker é reiniciado.<br/><br/>
 As mensagens trocadas entre os peers são todas criptografadas seguindo esse modelo a partir de agora.<br/>
 <h4>Versão 0.19 : EM BREVE</h4>
-- Melhorar mais o programa<br/>
-- Procurar e Corrigir Bugs<br/>
+- Fazer o sistema de simulação funcionar corretamente<br/>
