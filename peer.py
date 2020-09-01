@@ -1,5 +1,6 @@
 
 import socket, pickle, threading, time, random
+from cryptography.fernet import Fernet
 
 h = input("Informe o IP do Tracker: ")
 
@@ -25,19 +26,29 @@ while Tracker(login+"@"+senha) == False:
 print("Login Confirmado!")
 
 print("Atualizando Informações...")
+# Quem eu sou na rede, IP e Porta
 peer = "",0
 while peer[0] == "" and peer[1] == 0:
 	try:
 		peer = Tracker("peer")["peer"]
 	except:
 		peer = "",0
+# Lista de outros Peers na rede
 peers = {}
 while len(peers) == 0:
 	try:
 		peers = Tracker("list")["list"]
 	except:
 		peers = {}
+# Chave de Criptografia
+key = b''
+while key == b'':
+	try:
+		key = Tracker("key")["chave"]
+	except:
+		key = b''
 print("Informações Atualizadas!")
+f = Fernet(key)
 
 print("Quem eu Sou?")
 print("s - Shopping")
@@ -107,20 +118,20 @@ npm = npms = npmq = 0
 npmt = time.time()
 
 def RECEBER():
-	global s, h, peer, peers, pEnviar, ipeers, sou, estou, id, atual, limite, npm, npmt, npms, npmq
+	global s, h, peer, peers, pEnviar, ipeers, sou, estou, id, atual, limite, npm, npmt, npms, npmq, f
 	while True:
 		# Enviar Pacotes para Outros Peers
 		try:
 			# Caso a informação seja desigual, precisa enviar a todos se não quer dizer que alguem pode ficar sem informação
 			if len(peers)-1 != len(ipeers):
 				for x in peers:
-					s.sendto(pickle.dumps({peers[pickle.dumps(peer)]:pEnviar}),pickle.loads(x))
+					s.sendto(f.encrypt(pickle.dumps({peers[pickle.dumps(peer)]:pEnviar})),pickle.loads(x))
 			# Caso a informação seja igual, quer dizer que eu posso procurar quem realmente precisa receber informação
 			else:
 				for x in ipeers:
 					# Somente peers onde a informação é direcionada tem envio de pacotes
 					if pEnviar["para"] == ipeers[x] or pEnviar["de"] == ipeers[x] or pEnviar["de"].split(";")[0] == "f" or pEnviar["para"].split(";")[0] == "f":
-						s.sendto(pickle.dumps({peers[pickle.dumps(peer)]:pEnviar}),pickle.loads(x))
+						s.sendto(f.encrypt(pickle.dumps({peers[pickle.dumps(peer)]:pEnviar})),pickle.loads(x))
 					else:
 						npm+=1
 			if time.time() - npmt > 1:
@@ -133,11 +144,12 @@ def RECEBER():
 			pass
 		# Receber Pacotes
 		try:
-			d = s.recvfrom(1024)
-			data = pickle.loads(d[0])
+			d = s.recvfrom(2048)
+			data = d[0]
 			if d[1][0] == h and d[1][1] == 15000:
 				# Mensagem do Tracker
 				try:
+					data = pickle.loads(data)
 					for x in data:
 						if x == "peer":
 							peer = data["peer"]
@@ -155,6 +167,7 @@ def RECEBER():
 				pass # É uma mensagem que eu mesmo enviei
 			else:
 				# Isso são mensagens vindas de outros peers
+				data = pickle.loads(f.decrypt(data))
 				n = 0
 				for x in peers:
 					if d[1][0] == pickle.loads(x)[0] and d[1][1] == pickle.loads(x)[1]:
@@ -226,6 +239,7 @@ if sim == "n":
 		if a.lower() == "help" or a.lower == "ajuda" or a.lower == "socorro":
 			print("Lista de Comandos:")
 			print("help -> Para Mostrar essa Lista de Comandos")
+			print("chave -> Para Mostrar Chave de Criptografia")
 			print("status -> Para ver quem eu sou e qual a quantidade de pessoas aqui")
 			print("peer -> Para Mostrar quem eu sou na Rede")
 			print("peers -> Para Mostrar Lista de Peers e quantos pacotes foram enviados por cada")
@@ -235,6 +249,8 @@ if sim == "n":
 				print("entrou -> Para sinalizar que alguem entrou no peer")
 				print("saiu -> Para sinalizar que alguem saíu do peer")
 			print("")
+		elif a.lower() == "key" or a.lower() == "chave":
+			print(key)
 		elif a.lower() == "peer":
 			print(peer)
 		elif a.lower() == "peers":
