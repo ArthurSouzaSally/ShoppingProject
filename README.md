@@ -69,6 +69,11 @@ se dá por pacotes vazios, onde os peers já informam uns aos outros sobre entra
 suas respectivas identidades na rede.<br/>
 <h4>Versão 0.18</h4>
 Primeiramente agora é necessario que se faça a instalação da biblioteca <code>cryptography</code> pelo pip:<br/><br/>
-<code>pip install cryptography</code>
-
-
+<code>pip install cryptography</code><br/><br/>
+Pois foi implementado um sistema de criptografia na rede, agora depois que os peers se autenticam com o servidor, ele
+envia para eles uma chave de criptografia que é usada tanto para criptografar quanto para descriptografar mensagens que
+são enviadas na rede, a chave é modificada toda vez que o tracker é reiniciado.<br/><br/>
+As mensagens trocadas entre os peers são todas criptografadas seguindo esse modelo a partir de agora.<br/>
+<h4>Versão 0.19 : EM BREVE</h4>
+- Melhorar mais o programa<br/>
+- Procurar e Corrigir Bugs<br/>
