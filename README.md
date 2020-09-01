@@ -74,5 +74,12 @@ Pois foi implementado um sistema de criptografia na rede, agora depois que os pe
 envia para eles uma chave de criptografia que é usada tanto para criptografar quanto para descriptografar mensagens que
 são enviadas na rede, a chave é modificada toda vez que o tracker é reiniciado.<br/><br/>
 As mensagens trocadas entre os peers são todas criptografadas seguindo esse modelo a partir de agora.<br/>
-<h4>Versão 0.19 : EM BREVE</h4>
-- Fazer o sistema de simulação funcionar corretamente<br/>
+<h4>Versão 0.19</h4>
+Modo simulador finalmente concluído! E agora foi bem mais facil de implementar pois usava a variavel ipeers para saber
+para onde pacotes poderiam ser enviados ou de onde eles poderiam vir, fazendo não só a simulação funcionar, mas ter os
+numeros funcionando perfeitamente sem falhas de quantidade de pessoas confusa.<br/><br/>
+Houve problemas de novo com o peer shopping durante o modo simulador, mas quando eu fiz ele deixar de ser levado em
+consideração no envio de pacotes, a programação voltou a funcionar completamente, além disso eu desabilitei a chance
+de pacotes terem origem no peer shopping, que novamente serve apenas como um peer informativo sobre o total de pessoas
+que tem dentro do shopping.<br/>
+<h4>Versão 0.2 : EM BREVE</h4>
