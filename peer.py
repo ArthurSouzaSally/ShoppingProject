@@ -25,8 +25,8 @@ while Tracker(login+"@"+senha) == False:
 	senha = input("Senha: ")
 print("Login Confirmado!")
 
-print("Atualizando Informações...")
 # Quem eu sou na rede, IP e Porta
+print("Atualizando Identidade...")
 peer = "",0
 while peer[0] == "" and peer[1] == 0:
 	try:
@@ -34,6 +34,7 @@ while peer[0] == "" and peer[1] == 0:
 	except:
 		peer = "",0
 # Lista de outros Peers na rede
+print("Atualizando Lista de Peers...")
 peers = {}
 while len(peers) == 0:
 	try:
@@ -41,6 +42,7 @@ while len(peers) == 0:
 	except:
 		peers = {}
 # Chave de Criptografia
+print("Atualizando Criptografia...")
 key = b''
 while key == b'':
 	try:
