@@ -5,7 +5,7 @@ Com o objetivo de desenvolver uma rede P2P(peer-to-peer) que permita o controle 
 pode entrar dentro de um shopping, simulando sensores nas entradas do shopping, nas escadas rolantes para cada andar, em
 cada loja, e entradas de funcionarios.<br/>
 <h3>Documentação</h3>
-<h4>Versão 0.1</h4>
+<h4>Versão 0.10</h4>
 Na primeira versão foi criado um tracker e a engenharia dos peers, o tracker mantinha um arquivo contendo informações de
 todos os peers a fim de informar todos os peers da entrada de um novo peer, como ele não faz a comunicação entre os peers
 não há como saber se um pacote foi entregue ou não.<br/><br/>
@@ -82,4 +82,4 @@ Houve problemas de novo com o peer shopping durante o modo simulador, mas quando
 consideração no envio de pacotes, a programação voltou a funcionar completamente, além disso eu desabilitei a chance
 de pacotes terem origem no peer shopping, que novamente serve apenas como um peer informativo sobre o total de pessoas
 que tem dentro do shopping.<br/>
-<h4>Versão 0.2 : EM BREVE</h4>
+<h4>Versão 0.20 : EM BREVE</h4>
