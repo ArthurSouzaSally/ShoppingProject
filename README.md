@@ -83,5 +83,4 @@ consideração no envio de pacotes, a programação voltou a funcionar completam
 de pacotes terem origem no peer shopping, que novamente serve apenas como um peer informativo sobre o total de pessoas
 que tem dentro do shopping.<br/>
 <h4>Versão 0.20 : EM BREVE</h4>
-- Na hora de testar o programa em AWS, o servidor tem dificuldade para se comunicar com os peers.<br/>
 - Criar um arquivo de LOG para caso um peer ou a rede caia, quando ele voltar, ele volte para um estado consistente que ele tinha.<br/>
