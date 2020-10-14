@@ -1,5 +1,5 @@
 
-import socket, pickle, threading, time, random
+import socket, pickle, threading, time, random, json, os
 from cryptography.fernet import Fernet
 
 h = input("Informe o IP do Tracker: ")
@@ -27,12 +27,12 @@ print("Login Confirmado!")
 
 # Quem eu sou na rede, IP e Porta
 print("Atualizando Identidade...")
-peer = "",0
+peer = ["",0]
 while peer[0] == "" and peer[1] == 0:
 	try:
 		peer = Tracker("peer")["peer"]
 	except:
-		peer = "",0
+		peer = ["",0]
 # Lista de outros Peers na rede
 print("Atualizando Lista de Peers...")
 peers = {}
@@ -52,50 +52,78 @@ while key == b'':
 print("Informações Atualizadas!")
 f = Fernet(key)
 
-print("Quem eu Sou?")
-print("s - Shopping")
-print("a - Andar")
-print("l - Loja")
-sou = input("").lower()
-while sou != "s" and sou != "l" and sou != "a":
-	print("Valor incorreto!")
-	sou = input("").lower()
-estou = 0
-if sou == "l" or sou == "a":
-	print("Em qual andar eu estou?")
-	while True:
-		try:
-			estou = int(input(""))
-			while estou < 0:
-				print("Numero Possitivo, por favor")
-				estou = int(input(""))
-			break
-		except:
-			pass
-id = 0
-if sou == "l":
-	print("Qual o ID da loja?")
-	while True:
-		try:
-			id = int(input(""))
-			while id < 0:
-				print("Numero Possitivo, por favor")
-				id = int(input(""))
-			break
-		except:
-			pass
-atual = 0
-limite = 0
-print("Qual o limite de pessoas da area?")
-while True:
+# Criando um Log
+meuLog = random.randint(100000,999999)
+while os.path.isfile(str(meuLog)+".txt") == True:
+	meuLog = random.randint(100000,999999)
+
+# Carregando Informações dele:
+print("Carregar LOG?(\"s\" ou \"n\")")
+temp1 = ""
+while temp1 != "s" and temp1 != "n":
 	try:
-		limite = int(input(""))
-		while limite < 0:
-			print("Não pode existir um limite negativo")
-			limite = int(input(""))
-		break
+		temp1 = input("").lower()
 	except:
-		pass
+		temp1 = ""
+if temp1 == "n":
+	print("Quem eu Sou?")
+	print("s - Shopping")
+	print("a - Andar")
+	print("l - Loja")
+	sou = input("").lower()
+	while sou != "s" and sou != "l" and sou != "a":
+		print("Valor incorreto!")
+		sou = input("").lower()
+	estou = 0
+	if sou == "l" or sou == "a":
+		print("Em qual andar eu estou?")
+		while True:
+			try:
+				estou = int(input(""))
+				while estou < 0:
+					print("Numero Possitivo, por favor")
+					estou = int(input(""))
+				break
+			except:
+				pass
+	id = 0
+	if sou == "l":
+		print("Qual o ID da loja?")
+		while True:
+			try:
+				id = int(input(""))
+				while id < 0:
+					print("Numero Possitivo, por favor")
+					id = int(input(""))
+				break
+			except:
+				pass
+	atual = 0
+	limite = 0
+	print("Qual o limite de pessoas da area?")
+	while True:
+		try:
+			limite = int(input(""))
+			while limite < 0:
+				print("Não pode existir um limite negativo")
+				limite = int(input(""))
+			break
+		except:
+			pass
+	open(str(meuLog)+".txt","w").write(json.dumps({"sou":sou,"estou":estou,"id":id,"atual":atual,"limite":limite}))
+elif temp1 == "s":
+	print("Qual é o nome do LOG?(Apenas os Numeros)")
+	temp2 = input("")
+	while os.path.isfile(temp2+".txt") == False:
+		print("Arquivo não Existe")
+		temp2 = input("")
+	meuLog = temp2
+	temp3 = json.loads(open(temp2,"r").read())
+	sou = temp3["sou"]
+	estou = temp3["estou"]
+	id = temp3["id"]
+	atual = temp3["atual"]
+	limite = temp3["limite"]
 
 # FAZER AQUI UM MODO SIMULADOR
 sim = ""
@@ -122,6 +150,10 @@ npmt = time.time()
 def RECEBER():
 	global s, h, peer, peers, pEnviar, ipeers, sou, estou, id, atual, limite, npm, npmt, npms, npmq, f
 	while True:
+		try:
+			open(str(meuLog)+".txt","w").write(json.dumps({"sou":sou,"estou":estou,"id":id,"atual":atual,"limite":limite}))
+		except:
+			pass
 		# Enviar Pacotes para Outros Peers
 		try:
 			# Caso a informação seja desigual, precisa enviar a todos se não quer dizer que alguem pode ficar sem informação
@@ -255,6 +287,8 @@ if sim == "n":
 			print(key)
 		elif a.lower() == "peer":
 			print(peer)
+		elif a.lower() == "meuLog":
+			print(str(meuLog)+".txt")
 		elif a.lower() == "peers":
 			if len(peers) > 1:
 				print("Há um total de "+str(len(peers))+" atualmente na rede")
