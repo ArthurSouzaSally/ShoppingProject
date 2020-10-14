@@ -82,5 +82,10 @@ Houve problemas de novo com o peer shopping durante o modo simulador, mas quando
 consideração no envio de pacotes, a programação voltou a funcionar completamente, além disso eu desabilitei a chance
 de pacotes terem origem no peer shopping, que novamente serve apenas como um peer informativo sobre o total de pessoas
 que tem dentro do shopping.<br/>
-<h4>Versão 0.20 : EM BREVE</h4>
-- Criar um arquivo de LOG para caso um peer ou a rede caia, quando ele voltar, ele volte para um estado consistente que ele tinha.<br/>
+<h4>Versão 0.20</h4>
+- Foi implementado um sistema de Log, para corrigir falhas na rede criadas por peers que caem ou quando ocorre um erro
+na rede, entretanto o sistema de Log também indiretamente aumentou o nivel de processamento da rede uma vez que cada
+peer não consegue saber se os outros receberam os pacotes enviados, assim regredindo a um ponto anterior mas ainda sim
+corrigindo erros de peers que caem.<br/>
+<h4>Versão 0.21 : EM BREVE</h4>
+- Acabar com o erro de pacotes enviados para peers inexistentes na rede.<br/>
