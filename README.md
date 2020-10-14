@@ -91,7 +91,7 @@ corrigindo erros de peers que caem.<br/>
 - Eu tentei inicialmente criar um sistema onde pacotes enviados receberiam um tipo de confirmação que o pacote chegou,
 assim como o protocolo TCP, entretanto no UDP, mas por algum motivo que eu não entendo isso não funcionou, eu fiquei
 quase um mês parado tentando resolver isso e no fim eu resolvi criando um sistema de flooding.<br/><br/>
-- Isso quase garante que os pacotes cheguem, mas ao mesmo tempo impede que os peers saíbam com toda certeza que um peer
+- Isso garante que os pacotes cheguem, mas ao mesmo tempo impede que os peers saíbam com toda certeza que um peer
 recebeu ou não um pacote, junto ao sistema que decide que peers recebem ou não pacotes eu crio um sistema onde não é
 possivel confirmar se um peer está ou não funcionando.<br/><br/>
 - No momento em que um peer é derrubado ele entra novamente com o LOG, entretanto para o sistema ele é só uma outra
