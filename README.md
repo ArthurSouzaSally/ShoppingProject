@@ -83,9 +83,27 @@ consideração no envio de pacotes, a programação voltou a funcionar completam
 de pacotes terem origem no peer shopping, que novamente serve apenas como um peer informativo sobre o total de pessoas
 que tem dentro do shopping.<br/>
 <h4>Versão 0.20</h4>
-- Foi implementado um sistema de Log, para corrigir falhas na rede criadas por peers que caem ou quando ocorre um erro
+Foi implementado um sistema de Log, para corrigir falhas na rede criadas por peers que caem ou quando ocorre um erro
 na rede, entretanto o sistema de Log também indiretamente aumentou o nivel de processamento da rede uma vez que cada
 peer não consegue saber se os outros receberam os pacotes enviados, assim regredindo a um ponto anterior mas ainda sim
 corrigindo erros de peers que caem.<br/>
 <h4>Versão 0.21 : EM BREVE</h4>
-- Acabar com o erro de pacotes enviados para peers inexistentes na rede.<br/>
+- Eu tentei inicialmente criar um sistema onde pacotes enviados receberiam um tipo de confirmação que o pacote chegou,
+assim como o protocolo TCP, entretanto no UDP, mas por algum motivo que eu não entendo isso não funcionou, eu fiquei
+quase um mês parado tentando resolver isso e no fim eu resolvi criando um sistema de flooding.<br/><br/>
+- Isso quase garante que os pacotes cheguem, mas ao mesmo tempo impede que os peers saíbam com toda certeza que um peer
+recebeu ou não um pacote, junto ao sistema que decide que peers recebem ou não pacotes eu crio um sistema onde não é
+possivel confirmar se um peer está ou não funcionando.<br/><br/>
+- No momento em que um peer é derrubado ele entra novamente com o LOG, entretanto para o sistema ele é só uma outra
+entrada para aquela mesma loja, isso cria um problema que os outros peers vão enviar pacotes não só para os peers que
+já funcionam mas para peers que não funcionam mais.<br/><br/>
+- A primeira solução que eu pensei era um comando para confirmar a existencia de um peer, entretanto depois de uma
+serie interminavel de problemas no timing para a chegada dos pacotes, eu descartei essa possibilidade, o flooding  e o
+timing de limite para a chegada de novos pacotes impede que isso funcione com perfeição.<br/><br/>
+- A segunda solução e que foi descartada em seguida foi um pacote que corrige as variaveis e informações de outros
+peers, numa rede UDP nem mesmo o tracker que atua em baixo nivel de maneira parecida com um servidor consegue saber
+quais peers estão ou não funcionando, mas um peer que atua como LOG substituindo o anterio consegue saber que houve
+uma falha e qual é o pacote defeituoso, então bastaria criar um pacote que exclui essa informação da rede, porem a
+mesma ideia foi descartada por questões obvias de segurança(Se um atacante conseguisse obter acesso a criptografia
+da rede, isso seria literalmente uma forma de foder com toda a rede de comunicação estabelecida até agora).<br/><br/>
+- A terceira solução está sendo pensada.
