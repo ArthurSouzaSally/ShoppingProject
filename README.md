@@ -87,7 +87,7 @@ Foi implementado um sistema de Log, para corrigir falhas na rede criadas por pee
 na rede, entretanto o sistema de Log também indiretamente aumentou o nivel de processamento da rede uma vez que cada
 peer não consegue saber se os outros receberam os pacotes enviados, assim regredindo a um ponto anterior mas ainda sim
 corrigindo erros de peers que caem.<br/>
-<h4>Versão 0.21 : EM BREVE</h4>
+<h4>Versão 0.21 : PARA QUEM ESTIVER INTERESSADO EM RESOLVER ESSE FINAL</h4>
 - Eu tentei inicialmente criar um sistema onde pacotes enviados receberiam um tipo de confirmação que o pacote chegou,
 assim como o protocolo TCP, entretanto no UDP, mas por algum motivo que eu não entendo isso não funcionou, eu fiquei
 quase um mês parado tentando resolver isso e no fim eu resolvi criando um sistema de flooding.<br/><br/>
