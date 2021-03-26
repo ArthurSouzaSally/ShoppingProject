@@ -102,7 +102,7 @@ serie interminavel de problemas no timing para a chegada dos pacotes, eu descart
 timing de limite para a chegada de novos pacotes impede que isso funcione com perfeição.<br/><br/>
 - A segunda solução e que foi descartada em seguida foi um pacote que corrige as variaveis e informações de outros
 peers, numa rede UDP nem mesmo o tracker que atua em baixo nivel de maneira parecida com um servidor consegue saber
-quais peers estão ou não funcionando, mas um peer que atua como LOG substituindo o anterio consegue saber que houve
+quais peers estão ou não funcionando, mas um peer que atua como LOG substituindo-o, o anterior consegue saber que houve
 uma falha e qual é o pacote defeituoso, então bastaria criar um pacote que exclui essa informação da rede, porem a
 mesma ideia foi descartada por questões obvias de segurança(Se um atacante conseguisse obter acesso a criptografia
 da rede, isso seria literalmente uma forma de foder com toda a rede de comunicação estabelecida até agora).<br/><br/>
