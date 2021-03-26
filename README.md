@@ -106,4 +106,4 @@ quais peers estão ou não funcionando, mas um peer que atua como LOG substituin
 uma falha e qual é o pacote defeituoso, então bastaria criar um pacote que exclui essa informação da rede, porem a
 mesma ideia foi descartada por questões obvias de segurança(Se um atacante conseguisse obter acesso a criptografia
 da rede, isso seria literalmente uma forma de foder com toda a rede de comunicação estabelecida até agora).<br/><br/>
-- A terceira solução está sendo pensada.
+- Se alguem aí ainda tiver saco para pensar nesse programa fique a vontade para imaginar uma solução.
